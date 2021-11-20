@@ -18,6 +18,6 @@ setup(
     install_requires=requirements,
     classifiers=[
         "Programming Language :: Python :: 3.9",
-        "License :: Apache License 2.0",
+        "License :: OSI Approved :: Apache Software License",
     ],
 )
