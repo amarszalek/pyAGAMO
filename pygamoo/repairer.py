@@ -1,4 +1,4 @@
-from pygamoo.objective import Objective
+from pygamoo import Objective
 
 
 class Repairer(Objective):

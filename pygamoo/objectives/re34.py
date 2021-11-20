@@ -1,5 +1,5 @@
 import numpy as np
-from pygamoo.objective import Objective
+from pygamoo import Objective
 
 
 class RE34F1(Objective):

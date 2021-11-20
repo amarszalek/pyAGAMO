@@ -1,5 +1,5 @@
 import numpy as np
-from pygamoo.player import Player
+from pygamoo import Player
 from copy import deepcopy
 
 
