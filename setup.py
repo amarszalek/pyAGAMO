@@ -6,7 +6,7 @@ with open("README.md", "r") as readme_file:
 requirements = ["numpy", "pika"]
 
 setup(
-    name="pygamoo_test",
+    name="pygamootest",
     version="0.0.1",
     author="Adam Marszałek & Paweł Jarosz",
     author_email="amarszalek@pk.edu.pl",
