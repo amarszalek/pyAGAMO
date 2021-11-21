@@ -1,1 +1,1 @@
-from clonalselection import ClonalSelection
+from .clonalselection import ClonalSelection
