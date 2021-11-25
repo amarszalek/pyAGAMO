@@ -10,7 +10,8 @@ Welcome to pyGAMOO's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-intro
+   intro
+   pygamoo
 
 Indices and tables
 ==================
