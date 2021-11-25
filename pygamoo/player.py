@@ -51,6 +51,25 @@ class Player:
         self._p1 = p1
         self._p2 = p2
 
+    def is_alive(self, separate=False):
+        if (self._p1 is not None) and (self._p2 is not None):
+            return all([self._p1.is_alive(), self._p2.is_alive()])
+        if separate:
+            return (False if self._p1 is None else self._p1.is_alive(),
+                    False if self._p2 is None else self._p2.is_alive())
+        return False
+
+    def is_working(self):
+        return self._shared_values['start_flag']
+
+    def _start(self):
+        with self._lock:
+            self._shared_values['start_flag'] = True
+
+    def _stop(self):
+        with self._lock:
+            self._shared_values['start_flag'] = False
+
     def close(self):
         if self._p1 is not None:
             self._p1.terminate()
@@ -84,7 +103,6 @@ class Player:
         iters_pop = None
         while True:
             if self._shared_values['start_flag']:
-                pass
                 patterns = deepcopy(self._shared_values['patterns'])
                 pattern = patterns[obj]
                 if first:

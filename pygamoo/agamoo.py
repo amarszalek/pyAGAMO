@@ -3,7 +3,6 @@ import pika
 import pickle
 import time
 import random
-import logging
 from copy import deepcopy
 from multiprocessing import Process, Manager
 from pygamoo.utils import RpcClient, assigning_gens
@@ -59,7 +58,15 @@ class AGAMOO:
         self._lock = manager.RLock()
 
     def get_results(self):
-        return deepcopy(self._shared_front)
+        res = deepcopy(self._shared_front)
+        del res['objs_rpc']
+        del res['nobjs']
+        del res['max_front']
+        del res['change_iter']
+        del res['max_eval']
+        del res['min_iter_pop']
+        del res['change_flag']
+        return res
 
     def start(self):
         self._send_to(self.cmd_queue, 'Start')
@@ -85,7 +92,7 @@ class AGAMOO:
             del self._p5
         connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.host, port=self.port))
         channel = connection.channel()
-        #channel.exchange_delete(exchange=self.cmd_exchange)
+        channel.exchange_delete(exchange=self.cmd_exchange)
         channel.queue_delete(queue=self.best_pull_queue)
         channel.queue_delete(queue=self.best_push_queue)
         channel.queue_delete(queue=self.pop_queue)
@@ -95,8 +102,6 @@ class AGAMOO:
         self.close()
 
     def run(self):
-        logging.basicConfig(level=logging.INFO)
-        print('po logging')
         p1 = Process(target=self._best_pull_consumer, args=(self,))
         p1.daemon = True
         p1.start()
@@ -123,7 +128,21 @@ class AGAMOO:
         self._p4 = p4
         self._p5 = p5
 
-        logging.info("Starting processes")
+    def is_alive(self, separate=False):
+        if (self._p1 is not None) and (self._p2 is not None) and (self._p3 is not None) and (self._p4 is not None) and\
+                (self._p5 is not None):
+            return all([self._p1.is_alive(), self._p2.is_alive(), self._p3.is_alive(), self._p4.is_alive(),
+                        self._p5.is_alive()])
+        if separate:
+            return (False if self._p1 is None else self._p1.is_alive(),
+                    False if self._p2 is None else self._p2.is_alive(),
+                    False if self._p3 is None else self._p3.is_alive(),
+                    False if self._p4 is None else self._p4.is_alive(),
+                    False if self._p5 is None else self._p5.is_alive())
+        return False
+
+    def is_working(self):
+        return self._shared_values['start_flag']
 
     @staticmethod
     def _best_pull_consumer(self,):
@@ -308,21 +327,12 @@ class AGAMOO:
     def _main_process(self):
         patterns = None
         first = True
-        with open('logs.txt', 'a') as f:
-            f.write('-----------\nprzed while\n')
-        logging.info("glowna petla")
         while True:
             if self._shared_front['stop_flag']:
-                with open('logs.txt', 'a') as f:
-                    f.write('pierwszy if\n')
                 with self._lock:
                     self._shared_values['start_flag'] = not self._shared_front['stop_flag']
             if self._shared_values['start_flag']:
-                with open('logs.txt', 'a') as f:
-                    f.write('drugi if\n')
                 if first:
-                    with open('logs.txt', 'a') as f:
-                        f.write('first if\n')
                     with self._lock:
                         self._shared_front['objs_rpc'] = self.objs_queues
                         self._shared_front['front'] = []
@@ -333,8 +343,7 @@ class AGAMOO:
                         self._shared_front['min_iter_pop'] = 0
                         self._shared_front['change_flag'] = True
                         self._shared_front['stop_flag'] = False
-                    with open('logs.txt', 'a') as f:
-                        f.write('\t lock \n')
+
                     # sending parms to players
                     msg = ['parm', 'Next Iter', self.next_iter]
                     self._send_to_players(pickle.dumps(msg))
@@ -342,8 +351,6 @@ class AGAMOO:
                     self._send_to_players(pickle.dumps(msg))
                     msg = ['queue', 'Manager Pop', self.pop_queue]
                     self._send_to_players(pickle.dumps(msg))
-                    with open('logs.txt', 'a') as f:
-                        f.write('\t send to players \n')
                     first = False
                     # sending gens
                     if self._shared_front['change_flag']:
@@ -361,7 +368,7 @@ class AGAMOO:
                 if self._shared_front['change_flag']:
                     patterns = assigning_gens(self.nvars, self.nobjs)
                     msg = ['parm', 'Gens', patterns]
-                    self._send_to_players( pickle.dumps(msg))
+                    self._send_to_players(pickle.dumps(msg))
                     with self._lock:
                         self._shared_front['change_flag'] = False
             else:
