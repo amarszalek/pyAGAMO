@@ -129,6 +129,13 @@ class AGAMOO:
         self._p5 = p5
 
     def is_alive(self, separate=False):
+        if separate:
+            return (False if self._p1 is None else self._p1.is_alive(),
+                    False if self._p2 is None else self._p2.is_alive(),
+                    False if self._p3 is None else self._p3.is_alive(),
+                    False if self._p4 is None else self._p4.is_alive(),
+                    False if self._p5 is None else self._p5.is_alive())
+
         if (self._p1 is not None) and (self._p2 is not None) and (self._p3 is not None) and (self._p4 is not None) and\
                 (self._p5 is not None):
             return all([self._p1.is_alive(), self._p2.is_alive(), self._p3.is_alive(), self._p4.is_alive(),
@@ -195,9 +202,6 @@ class AGAMOO:
         channel.queue_declare(queue=self.pop_queue)
 
         def callback(cal_shared_front, cal_lock, body):
-
-            with open('logs.txt', 'a') as f:
-                f.write(f'odebrano od {self.pop_queue}\n')
             front = cal_shared_front['front']
             front_eval = cal_shared_front['front_eval']
             evaluations = cal_shared_front['evaluations']
@@ -375,6 +379,8 @@ class AGAMOO:
                 if first:
                     continue
                 else:
+                    with self._lock:
+                        self._shared_front['stop_flag'] = False
                     # sending STOP to players
                     msg = ['cmd', 'Stop']
                     self._send_to_players(pickle.dumps(msg))

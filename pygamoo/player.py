@@ -52,11 +52,11 @@ class Player:
         self._p2 = p2
 
     def is_alive(self, separate=False):
-        if (self._p1 is not None) and (self._p2 is not None):
-            return all([self._p1.is_alive(), self._p2.is_alive()])
         if separate:
             return (False if self._p1 is None else self._p1.is_alive(),
                     False if self._p2 is None else self._p2.is_alive())
+        if (self._p1 is not None) and (self._p2 is not None):
+            return all([self._p1.is_alive(), self._p2.is_alive()])
         return False
 
     def is_working(self):
@@ -180,8 +180,6 @@ class Player:
                     next_iter_counter = 0
                     iters_pop = deepcopy(iters)
 
-                with open('logs.txt', 'a') as f:
-                    f.write(f'iter mask {iters_mask} from {self.num}\n')
                 if np.all(iters_mask) and self._shared_values['start_flag']:
                     best_solutions_pop = deepcopy(best_solutions)
                     unique_pop, indices = np.unique(pop, axis=0, return_index=True)
@@ -253,5 +251,3 @@ def _send_to(queue, msg, host, port):
     channel.queue_declare(queue=queue)
     channel.basic_publish(exchange='', routing_key=queue, body=message)
     connection.close()
-    with open('logs.txt', 'a') as f:
-        f.write(f'wyslano do {queue} wiad {msg}\n')
