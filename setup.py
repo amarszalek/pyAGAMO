@@ -7,7 +7,7 @@ requirements = ["numpy", "pika"]
 
 setup(
     name="pygamootest",
-    version="0.0.4",
+    version="0.0.5",
     author="Adam Marszałek & Paweł Jarosz",
     author_email="amarszalek@pk.edu.pl",
     description="GAme theory based framework for MultiObjective Optimization in Python",

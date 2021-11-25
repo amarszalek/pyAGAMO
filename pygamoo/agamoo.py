@@ -379,8 +379,6 @@ class AGAMOO:
                 if first:
                     continue
                 else:
-                    with self._lock:
-                        self._shared_front['stop_flag'] = False
                     # sending STOP to players
                     msg = ['cmd', 'Stop']
                     self._send_to_players(pickle.dumps(msg))
@@ -393,6 +391,8 @@ class AGAMOO:
                     connection.close()
                     first = True
                     time.sleep(2)
+                    with self._lock:
+                        self._shared_front['stop_flag'] = False
 
 
 

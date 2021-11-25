@@ -154,9 +154,6 @@ class Player:
                 nobjs = len(best_solutions)
                 best_mask = np.zeros(nobjs, dtype=bool)
                 iters_mask = np.zeros(nobjs, dtype=bool)
-                with open('logs.txt', 'a') as f:
-                    f.write(f'iters {iters} from {self.num}\n')
-                    f.write(f'sol {best_solutions} from {self.num}\n')
 
                 for i in range(nobjs):
                     if best_solutions_pop is None or np.any(best_solutions_pop[i] != best_solutions[i]):
@@ -189,7 +186,6 @@ class Player:
                     shared_population['evaluation_counter'] = evaluation_counter
                     _send_to(self._shared_values['manager_pop_queue'], shared_population, self.host, self.port)
             else:
-                pass
                 first = True
                 next_iter_counter = 0
                 shared_best['solution'] = None
