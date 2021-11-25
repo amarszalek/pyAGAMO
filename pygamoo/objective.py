@@ -4,8 +4,7 @@ from multiprocessing import Process
 
 
 class Objective:
-    """
-    Base class for creating objective function objects.
+    """Base class for creating objective function objects.
     It provides functionalities for evaluate objective function via message broker.
 
     Parameters
@@ -22,6 +21,8 @@ class Objective:
         TCP port to connect to message broker
     """
     def __init__(self, num, qname, host, port):
+        """Constructor method
+        """
         self.num = num
         self.qname = qname
         self.host = host
@@ -29,8 +30,7 @@ class Objective:
         self._p = None
 
     def call(self, x):
-        """
-        Abstract method. Override this method by formula of objective function.
+        """Abstract method. Override this method by formula of objective function.
 
         Parameters
         ----------
