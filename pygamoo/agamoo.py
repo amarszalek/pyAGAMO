@@ -215,6 +215,9 @@ class AGAMOO:
             max_eval = cal_shared_front['max_eval']
             nobjs = cal_shared_front['nobjs']
 
+            if stop_flag:
+                return None
+
             objs_rpc = []
             for i in range(nobjs):
                 objs_rpc.append(RpcClient(cal_shared_front['objs_rpc'][i], self.host, self.port))
@@ -391,8 +394,6 @@ class AGAMOO:
                     connection.close()
                     first = True
                     time.sleep(2)
-                    with self._lock:
-                        self._shared_front['stop_flag'] = False
 
 
 
