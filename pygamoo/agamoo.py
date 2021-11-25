@@ -316,16 +316,18 @@ class AGAMOO:
         channel = connection.channel()
         channel.queue_declare(queue=self.cmd_queue)
 
-        def callback(cal_shared_values, cal_lock, body):
+        def callback(cal_shared_values, cal_shared_front, cal_lock, body):
             cmd = pickle.loads(body, encoding='bytes')
             with cal_lock:
                 if cmd == 'Start':
                     cal_shared_values['start_flag'] = True
+                    cal_shared_front['stop_flag'] = False
                 if cmd == 'Stop':
                     cal_shared_values['start_flag'] = False
 
         channel.basic_consume(queue=self.cmd_queue,
-                              on_message_callback=lambda ch, met, prop, body: callback(self._shared_values, self._lock,
+                              on_message_callback=lambda ch, met, prop, body: callback(self._shared_values,
+                                                                                       self._shared_front, self._lock,
                                                                                        body),
                               auto_ack=True)
         channel.start_consuming()
