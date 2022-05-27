@@ -2,6 +2,8 @@ import pika
 import uuid
 import pickle
 import numpy as np
+import time
+import sys
 
 
 class RpcClient:
@@ -83,3 +85,21 @@ def front_suppression(front_eval, front_max):
     mask = np.ones(front_eval.shape[0], dtype=bool)
     mask[indx[np.sort(i)][:n]] = False
     return mask
+
+
+def print_running():
+    sys.stdout.write('Running ')
+    sys.stdout.flush()
+    time.sleep(0.5)
+    sys.stdout.write('.')
+    sys.stdout.flush()
+    time.sleep(0.5)
+    sys.stdout.write('.')
+    sys.stdout.flush()
+    time.sleep(0.5)
+    sys.stdout.write('.')
+    sys.stdout.flush()
+    time.sleep(0.5)
+    sys.stdout.write('\r')
+    sys.stdout.flush()
+

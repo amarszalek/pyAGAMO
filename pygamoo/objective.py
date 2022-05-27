@@ -9,21 +9,16 @@ class Objective:
 
     Parameters
     ----------
-    num : int
-        The ordinal number of the objective function.
-        It is using by main algorithm and players to identify the objective function.
-        Must be a unique value from the range $[0, n-1]$, where $n$ is the number of all objective functions.
     qname : str
-        The queue name
+        The queue name. It is using by main algorithm and players to identify the objective function.
     host : str
         Hostname or IP Address to connect to message broker
     port : int
         TCP port to connect to message broker
     """
-    def __init__(self, num, qname, host, port):
+    def __init__(self, qname, host, port):
         """Constructor method
         """
-        self.num = num
         self.qname = qname
         self.host = host
         self.port = port
@@ -58,9 +53,9 @@ class Objective:
     def close(self):
         if self._p is not None:
             self._p.terminate()
-            connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.host, port=self.port))
-            channel = connection.channel()
-            channel.queue_delete(queue=self.qname)
+            #connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.host, port=self.port))
+            #channel = connection.channel()
+            #channel.queue_delete(queue=self.qname)
 
     def __del__(self):
         self.close()

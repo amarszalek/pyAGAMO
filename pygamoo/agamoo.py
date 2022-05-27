@@ -75,6 +75,9 @@ class AGAMOO:
         self._send_to(self.cmd_queue, 'Stop')
 
     def close(self):
+        msg = ['cmd', 'Stop']
+        self._send_to_players(pickle.dumps(msg))
+        time.sleep(1)
         if self._p1 is not None:
             self._p1.terminate()
             del self._p1
@@ -92,7 +95,6 @@ class AGAMOO:
             del self._p5
         connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.host, port=self.port))
         channel = connection.channel()
-        channel.exchange_delete(exchange=self.cmd_exchange)
         channel.queue_delete(queue=self.best_pull_queue)
         channel.queue_delete(queue=self.best_push_queue)
         channel.queue_delete(queue=self.pop_queue)
@@ -140,12 +142,6 @@ class AGAMOO:
                 (self._p5 is not None):
             return all([self._p1.is_alive(), self._p2.is_alive(), self._p3.is_alive(), self._p4.is_alive(),
                         self._p5.is_alive()])
-        if separate:
-            return (False if self._p1 is None else self._p1.is_alive(),
-                    False if self._p2 is None else self._p2.is_alive(),
-                    False if self._p3 is None else self._p3.is_alive(),
-                    False if self._p4 is None else self._p4.is_alive(),
-                    False if self._p5 is None else self._p5.is_alive())
         return False
 
     def is_working(self):
@@ -258,6 +254,8 @@ class AGAMOO:
             if max_eval > 0:
                 if np.min(evaluations + evaluations_m) >= max_eval:
                     stop_flag = True
+                    msg = ['cmd', 'Stop']
+                    self._send_to_players(pickle.dumps(msg))
             if pop.shape[0] > 0:
                 mask = get_not_dominated(pop_evals)
                 pop = pop[mask]
@@ -334,7 +332,6 @@ class AGAMOO:
 
     @staticmethod
     def _main_process(self):
-        patterns = None
         first = True
         while True:
             if self._shared_front['stop_flag']:
@@ -352,7 +349,6 @@ class AGAMOO:
                         self._shared_front['min_iter_pop'] = 0
                         self._shared_front['change_flag'] = True
                         self._shared_front['stop_flag'] = False
-
                     # sending parms to players
                     msg = ['parm', 'Next Iter', self.next_iter]
                     self._send_to_players(pickle.dumps(msg))
@@ -368,7 +364,6 @@ class AGAMOO:
                         self._send_to_players(pickle.dumps(msg))
                         with self._lock:
                             self._shared_front['change_flag'] = False
-
                     # sending START to players
                     msg = ['cmd', 'Start']
                     self._send_to_players(pickle.dumps(msg))
@@ -396,11 +391,3 @@ class AGAMOO:
                     connection.close()
                     first = True
                     time.sleep(2)
-
-
-
-
-
-
-
-

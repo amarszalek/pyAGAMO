@@ -75,9 +75,9 @@ class Player:
             self._p1.terminate()
         if self._p2 is not None:
             self._p2.terminate()
-        connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.host, port=self.port))
-        channel = connection.channel()
-        channel.exchange_delete(exchange=self.cmd_exchange)
+        #connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.host, port=self.port))
+        #channel = connection.channel()
+        #channel.exchange_delete(exchange=self.cmd_exchange)
 
     def __del__(self):
         self.close()
