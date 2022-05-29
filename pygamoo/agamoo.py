@@ -80,19 +80,19 @@ class AGAMOO:
         time.sleep(1)
         if self._p1 is not None:
             self._p1.terminate()
-            del self._p1
+            self._p1 = None
         if self._p2 is not None:
             self._p2.terminate()
-            del self._p2
+            self._p2 = None
         if self._p3 is not None:
             self._p3.terminate()
-            del self._p3
+            self._p3 = None
         if self._p4 is not None:
             self._p4.terminate()
-            del self._p4
+            self._p4 = None
         if self._p5 is not None:
             self._p5.terminate()
-            del self._p5
+            self._p5 = None
         connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.host, port=self.port))
         channel = connection.channel()
         channel.queue_delete(queue=self.best_pull_queue)
