@@ -150,7 +150,9 @@ class Player:
                 # getting best from other players via manager
                 res = evaluate_call(None, best_rpc)
                 best_solutions = res[0]
+                best_solutions[obj] = shared_best['solution']
                 iters = res[1]
+                iters[obj] = shared_population['iteration']
                 nobjs = len(best_solutions)
                 best_mask = np.zeros(nobjs, dtype=bool)
                 iters_mask = np.zeros(nobjs, dtype=bool)
@@ -173,11 +175,11 @@ class Player:
                         pop_eval = evaluate_call(pop, self.obj_rpc)
                         evaluation_counter += pop.shape[0]
 
-                if np.all(iters_mask):
+                if np.all(iters_mask[:obj]) and np.all(iters_mask[obj + 1:]):
                     next_iter_counter = 0
                     iters_pop = deepcopy(iters)
 
-                if np.all(iters_mask) and self._shared_values['start_flag']:
+                if self._shared_values['start_flag']: # and np.all(iters_mask):
                     best_solutions_pop = deepcopy(best_solutions)
                     unique_pop, indices = np.unique(pop, axis=0, return_index=True)
                     unique_pop_eval = pop_eval[indices]

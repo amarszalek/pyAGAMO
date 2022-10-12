@@ -74,7 +74,9 @@ def pairwise_distance_xy(x, y):
 
 def front_suppression(front_eval, front_max):
     n = front_eval.shape[0] - front_max
-    z = pairwise_distance(front_eval)
+    front_eval_norm = front_eval + np.abs(np.min(front_eval, axis=0))
+    front_eval_norm = front_eval_norm/np.max(front_eval_norm, axis=0)
+    z = pairwise_distance(front_eval_norm)
     ran = np.random.random()
     if ran > 0.5:
         z = np.transpose(z)

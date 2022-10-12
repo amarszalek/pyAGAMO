@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../pyAGAMOO/.idea/pyAGAMOO.iml" filepath="$PROJECT_DIR$/../pyAGAMOO/.idea/pyAGAMOO.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/pyGAMOO.iml" filepath="$PROJECT_DIR$/.idea/pyGAMOO.iml" />
     </modules>
   </component>

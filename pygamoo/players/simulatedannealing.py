@@ -3,40 +3,29 @@ from pygamoo import Player
 from copy import deepcopy
 
 
-class ClonalSelection(Player):
+class SimulatedAnnealing(Player):
     def __init__(self, num, obj_queue, repair_queue, cmd_exchange, npop, nvars, bounds, host, port, player_parm):
-        self.nclone = player_parm['nclone']
+        self.temp = player_parm['temp']
+        self.dec_step = player_parm['dec_step']
         self.mutate_args = tuple(player_parm['mutate_args'])
-        super(ClonalSelection, self).__init__(num, obj_queue, repair_queue, cmd_exchange, npop, nvars, bounds, host, port)
+        super(SimulatedAnnealing, self).__init__(num, obj_queue, repair_queue, cmd_exchange, npop, nvars, bounds, host, port)
 
     def step(self, pop, pop_eval, pattern):
         temp_pop = deepcopy(pop)
         temp_pop_eval = deepcopy(pop_eval)
-        arg_sort = temp_pop_eval.argsort()
-        indices = []
-        better = []
-        better_eval = []
         evaluation_counter = 0
-        for rank, arg in enumerate(arg_sort):
-            clone_num = max(int(self.nclone / (rank + 1) + 0.5), 1)
-            clones = np.array([self._mutate(temp_pop[arg], pattern) for _ in range(clone_num)])
-            clones = np.unique(clones, axis=0)
-            clones = clones[np.any(clones != pop[arg], axis=1)]
-            if clones.shape[0] > 0:
-                if self.repair_rpc is not None:
-                    clones = self.evaluate_call(clones, self.repair_rpc)
-                clones_eval = self.evaluate_call(clones, self.obj_rpc)
-                evaluation_counter += clones.shape[0]
-                argmin = clones_eval.argmin()
-                if clones_eval[argmin] < temp_pop_eval[arg]:
-                    indices.append(arg)
-                    better.append(clones[argmin])
-                    better_eval.append(clones_eval[argmin])
-        if len(better) > 0:
-            better = np.stack(better)
-            better_eval = np.stack(better_eval)
-            temp_pop[indices] = better
-            temp_pop_eval[indices] = better_eval
+        args = (pattern,)
+        clones = np.apply_along_axis(self._mutate, 1, temp_pop, *args)
+        if self.repair_rpc is not None:
+            clones = self.evaluate_call(clones, self.repair_rpc)
+        clones_eval = self.evaluate_call(clones, self.obj_rpc)
+        evaluation_counter += clones.shape[0]
+        r = np.random.random(size=self.npop)
+        p = np.exp((temp_pop_eval - clones_eval) / self.temp)
+        mask = r < p
+        temp_pop[mask, :] = clones[mask, :]
+        temp_pop_eval[mask] = clones_eval[mask]
+        self.temp = self.temp * self.dec_step
         return temp_pop, temp_pop_eval, evaluation_counter
 
     def _mutate(self, ind, pattern):

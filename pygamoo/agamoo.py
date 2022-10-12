@@ -271,6 +271,13 @@ class AGAMOO:
                     front = front[mask]
                     front_eval = front_eval[mask]
 
+            #front suppression cable
+            #if 0 < max_front < front.shape[0]:
+            #    mask = front_eval[:,2] < 100
+            #    #mask = front_suppression(front_eval, max_front)
+            #    front = front[mask]
+            #    front_eval = front_eval[mask]
+
             # front suppression
             if 0 < max_front < front.shape[0]:
                 mask = front_suppression(front_eval, max_front)

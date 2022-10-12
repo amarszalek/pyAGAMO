@@ -1,1 +1,2 @@
 from .clonalselection import ClonalSelection
+from .simulatedannealing import SimulatedAnnealing

@@ -11,7 +11,7 @@ class Logger:
         self.port = port
         self._p = None
         # create logfile or clean if exist
-        with open(self.log_file, 'r'):
+        with open(self.log_file, 'w'):
             pass
 
     def run(self):
@@ -24,6 +24,11 @@ class Logger:
         if self._p is not None:
             self._p.terminate()
             self._p = None
+        connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.host, port=self.port))
+        channel = connection.channel()
+        q_state = channel.queue_declare(self.queue)
+        if q_state.method.consumer_count == 0:
+            channel.queue_delete(queue=self.queue)
 
     def __del__(self):
         self.close()
