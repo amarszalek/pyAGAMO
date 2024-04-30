@@ -2,7 +2,9 @@ pyAGAMO
 =======
 Asynchronous GAme theory based framework for MultiObjective Optimization in Python
 
-|License| |Docs|
+.. image:: https://readthedocs.org/projects/pyagamo/badge/?version=latest
+    :target: https://pyagamo.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
 
 Documentation
 -------------
