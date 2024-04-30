@@ -1,6 +1,6 @@
 pyAGAMOO
-=======
-GAme theory based framework for MultiObjective Optimization in Python
+========
+Asynchronous GAme theory based framework for MultiObjective Optimization in Python
 
 |License| |Docs|
 
