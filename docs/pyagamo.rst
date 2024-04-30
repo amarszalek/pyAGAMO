@@ -1,4 +1,4 @@
-pygamoo package
+pyagamo package
 ===============
 
 Subpackages
@@ -7,48 +7,40 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   pygamoo.objectives
-   pygamoo.players
+   pyagamo.objectives
+   pyagamo.players
 
 Submodules
 ----------
 
-pygamoo.agamoo module
----------------------
-
-.. automodule:: pygamoo.agamoo
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-pygamoo.objective module
-------------------------
-
-.. automodule:: pygamoo.objective
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-pygamoo.player module
----------------------
-
-.. automodule:: pygamoo.player
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-pygamoo.repairer module
------------------------
-
-.. automodule:: pygamoo.repairer
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-pygamoo.utils module
+pyagamo.agamo module
 --------------------
 
-.. automodule:: pygamoo.utils
+.. automodule:: pyagamo.agamo
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pyagamo.objective module
+------------------------
+
+.. automodule:: pyagamo.objective
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pyagamo.player module
+---------------------
+
+.. automodule:: pyagamo.player
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pyagamo.utils module
+--------------------
+
+.. automodule:: pyagamo.utils
    :members:
    :undoc-members:
    :show-inheritance:
@@ -56,7 +48,7 @@ pygamoo.utils module
 Module contents
 ---------------
 
-.. automodule:: pygamoo
+.. automodule:: pyagamo
    :members:
    :undoc-members:
    :show-inheritance:

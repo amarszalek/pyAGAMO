@@ -1,7 +1,7 @@
-pygamoo
+pyagamo
 =======
 
 .. toctree::
    :maxdepth: 4
 
-   pygamoo
+   pyagamo

@@ -1,17 +1,16 @@
-.. pyGAMOO documentation master file, created by
-   sphinx-quickstart on Sun Nov 21 00:17:45 2021.
+.. pyAGAMO documentation master file, created by
+   sphinx-quickstart on Tue Apr 30 11:09:35 2024.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to pyGAMOO's documentation!
+Welcome to pyAGAMO's documentation!
 ===================================
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   intro
-   pygamoo
+
 
 Indices and tables
 ==================
