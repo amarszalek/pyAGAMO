@@ -1,18 +1,18 @@
 from osbrain import run_nameserver
 from osbrain import run_agent
-import osbrain
 from pyagamo.utils import assigning_gens, get_not_dominated, front_suppression
 from pyagamo.utils import PopMemoryQueue
-import time
 from copy import deepcopy
 from multiprocessing import Manager
 import numpy as np
-import sys
 from tqdm import tqdm
+import asyncio
+import threading
 
 
 class AGAMO:
-    def __init__(self, max_eval, change_iter, next_iter, max_front, init_pop='separate', mq=0, ns=None, transport='ipc', verbose=False):
+    def __init__(self, max_eval, change_iter, next_iter, max_front, init_pop='separate', mq=0, ns=None, transport='ipc',
+                 verbose=False):
         self.max_front = max_front
         self.max_eval = max_eval
         self.change_iter = change_iter
@@ -46,20 +46,6 @@ class AGAMO:
         self.nvars = objectives[0].n_var
         self.bounds = objectives[0].bounds
         self.objectives_m = objectives_m
-        
-    def add_objectives_distribute(self, nobjs, ns, manager='duplicate'):
-        agents_in_NS = osbrain.nameserver.NameServer.agents(ns)
-        anum = nobjs if manager=='duplicate' else nobjs*2
-        while len(agents_in_NS) < anum:
-            agents_in_NS = osbrain.nameserver.NameServer.agents(ns_proxy)
-            print('Current agents in Nameserver are: %s' %agents_in_NS)
-            time.sleep(1)
-        
-        self.objectives = objectives
-        self.nobjs = objectives[0].n_obj
-        self.nvars = objectives[0].n_var
-        self.bounds = objectives[0].bounds
-        self.objectives_m = objectives_m
                     
     def add_repair(self, repair):
         self.repair = repair
@@ -67,7 +53,7 @@ class AGAMO:
     def add_players(self, players):
         self.players = players
     
-    def run(self):
+    def init(self):
         # kopia objectives
         if self.objectives_m is None:
             self.objectives_m = deepcopy(self.objectives)
@@ -86,7 +72,8 @@ class AGAMO:
             self.repair_addr = self.repair.run(ns=self.ns)
         
         self.best_agent = run_agent('best', self.ns.addr(), transport=self.transport)
-        self.best_addr = self.best_agent.bind('REP', alias='get_set_best', handler=lambda a,m: self._reply_best(a,m), transport=self.transport)
+        self.best_addr = self.best_agent.bind('REP', alias='get_set_best', handler=lambda a, m: self._reply_best(a, m),
+                                              transport=self.transport)
         
         self.mbest_agent = run_agent(f'best_f', self.ns.addr(), transport=self.transport)
         self.mbest_agent.connect(self.best_addr, alias='get_set_best')
@@ -100,14 +87,23 @@ class AGAMO:
             self.obj_agents[-1].connect(addr, alias='evaluate')
         
         self.front_agent = run_agent('front', self.ns.addr(), transport=self.transport)
-        self.front_addr = self.front_agent.bind('ASYNC_REP', alias='push_front', handler=lambda a,m: self._pop_consumer(a,m), transport=self.transport)
+        self.front_addr = self.front_agent.bind('ASYNC_REP', alias='push_front',
+                                                handler=lambda a, m: self._pop_consumer(a, m), transport=self.transport)
         
         self.player_processes = []
         for i, player in enumerate(self.players):
-            self.player_processes.append(player.run(self.objs_addr[i], self.repair_addr, self.best_addr, self.cmd_addr, self.front_addr, self.nvars,
-                                                    self.bounds, self.next_iter, ns=self.ns))      
-    
-    def start_optimize(self, verbose=1):
+            self.player_processes.append(player.run(self.objs_addr[i], self.repair_addr, self.best_addr, self.cmd_addr,
+                                                    self.front_addr, self.nvars, self.bounds, self.next_iter,
+                                                    ns=self.ns))
+
+    def start_optimize(self, tqdm_disable=False, verbose=1, thread=False):
+        if thread:
+            t1 = threading.Thread(target=self._start_optimize, args=(True, verbose))
+            t1.start()
+        else:
+            self._start_optimize(tqdm_disable=tqdm_disable, verbose=verbose)
+
+    def _start_optimize(self, tqdm_disable=False, verbose=1):
         first = True
         self._shared_best['solutions'] = [None] * self.nobjs
         self._shared_best['iter_counters'] = [None] * self.nobjs
@@ -127,7 +123,7 @@ class AGAMO:
         self._shared_front['change_flag'] = True
         start_flag = True
         
-        with tqdm(total=self.max_eval, unit='eval') as pbar: 
+        with tqdm(total=self.max_eval, unit='eval', disable=tqdm_disable) as pbar:
             while start_flag:
                 if self._shared_front['stop_flag']:
                     start_flag = not self._shared_front['stop_flag']
@@ -186,8 +182,7 @@ class AGAMO:
         
         for p in self.player_processes:
             p.terminate()
-                
-    
+
     def get_results(self):
         res = deepcopy(self._shared_front)
         #del res['nobjs']
@@ -290,7 +285,7 @@ class AGAMO:
                 self.qpop.add_new(pop, pop_evals)
         
         if pop_old is not None:
-            if pop.shape[0]> 0:
+            if pop.shape[0] > 0:
                 pop = np.concatenate((pop, pop_old))
                 pop_evals = np.concatenate((pop_evals, pop_old_evals))
             else:
