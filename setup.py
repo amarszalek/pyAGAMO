@@ -3,7 +3,8 @@ from setuptools import setup, find_packages
 with open("README.rst", "r") as readme_file:
     readme = readme_file.read()
 
-requirements = ["numpy", "pika"]
+requirements = ['numpy==1.25.2', 'osbrain==0.6.5', 'pymoo==0.6.0.1', 'Pyro4==4.82', 'scipy==1.11.1',
+                'setuptools==68.2.2', 'tqdm==4.66.1']
 
 setup(
     name="pyagamo",

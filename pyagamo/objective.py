@@ -39,7 +39,8 @@ class Objective:
         else:
             self.ns = ns
         self.objective = run_agent(f'Objective_{self.num}', self.ns.addr(), transport=self.transport)
-        self.addr = self.objective.bind('REP', alias='evaluate', handler=lambda a,m: self.reply(a,m), transport=self.transport)
+        self.addr = self.objective.bind('REP', alias='evaluate', handler=lambda a, m: self.reply(a, m),
+                                        transport=self.transport)
         return self.addr
         
     def reply(self, agent, message):

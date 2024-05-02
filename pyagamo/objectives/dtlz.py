@@ -3,7 +3,8 @@ from pyagamo import Objective
 
 
 class DTLZ(Objective):
-    def __init__(self, num, n_dtlz=1, obj=1, n_var=10, n_obj=3, alpha=100, d=100, ns=None, transport='ipc', args=None, verbose=False):
+    def __init__(self, num, n_dtlz=1, obj=1, n_var=10, n_obj=3, alpha=100, d=100, ns=None, transport='ipc', args=None,
+                 verbose=False):
         self.n_dtlz = n_dtlz
         obj = obj - 1
         n_var = n_var
@@ -68,7 +69,7 @@ class DTLZ(Objective):
             theta = np.column_stack([x[:, 0], theta[:, 1:]])
             return self.obj_func(theta, g)
         elif self.n_dtlz == 7:
-            if self.obj < self.n_obj -1:
+            if self.obj < self.n_obj - 1:
                 return x[:, self.obj]
             else:
                 f = []

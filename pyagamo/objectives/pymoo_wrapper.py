@@ -1,6 +1,7 @@
 import numpy as np
 from pyagamo import Objective
 
+
 class Problem_pymoo(Objective):
     def __init__(self, num, obj, pymoo_prob, ns=None, transport='ipc', args=None, verbose=False):
         obj = obj - 1
