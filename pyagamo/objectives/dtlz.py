@@ -5,14 +5,14 @@ from pyagamo import Objective
 class DTLZ(Objective):
     def __init__(self, num, n_dtlz=1, obj=1, n_var=10, n_obj=3, alpha=100, d=100, ns=None, transport='ipc', args=None, verbose=False):
         self.n_dtlz = n_dtlz
-        self.obj = obj - 1
-        self.n_var = n_var
-        self.n_obj = n_obj
+        obj = obj - 1
+        n_var = n_var
+        n_obj = n_obj
         self.k = n_var - n_obj + 1
         self.alpha = alpha
         self.d = d
-        self.bounds = list(zip([0.0]*self.n_var, [1.0]*self.n_var))
-        super(DTLZ, self).__init__(num, ns, transport, args, verbose)
+        bounds = list(zip([0.0]*self.n_var, [1.0]*self.n_var))
+        super(DTLZ, self).__init__(num, n_var, n_obj, bounds, obj, ns, transport, args, verbose)
 
     def g1(self, X_M):
         return 100 * (self.k + np.sum(np.square(X_M - 0.5) - np.cos(20 * np.pi * (X_M - 0.5)), axis=1))
