@@ -90,9 +90,9 @@ class Objective:
         self._obj = value
 
 
-def publish_objective(*Objs):
+def publish_objective(*objs):
     daemon = Pyro4.Daemon()
-    for Obj in Objs:
-        uri = daemon.register(Obj)
+    for obj in objs:
+        uri = daemon.register(obj)
         print(uri)
     daemon.requestLoop()
