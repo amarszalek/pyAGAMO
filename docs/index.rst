@@ -6,13 +6,13 @@
 Welcome to pyAGAMO's documentation!
 ===================================
 
+`pyAGAMO` is ...
+
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents:
 
-   modules
-
-
+   started
 
 Indices and tables
 ==================
