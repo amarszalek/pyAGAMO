@@ -185,12 +185,13 @@ class AGAMO:
 
     def get_results(self):
         res = deepcopy(self._shared_front)
-        #del res['nobjs']
-        #del res['max_front']
-        #del res['change_iter']
-        #del res['max_eval']
-        #del res['min_iter_pop']
-        #del res['change_flag']
+        if 'nobjs' in res:
+            del res['nobjs']
+            del res['max_front']
+            del res['change_iter']
+            del res['max_eval']
+            del res['min_iter_pop']
+            del res['change_flag']
         return res
     
     def close(self):
