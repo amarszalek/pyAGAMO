@@ -6,7 +6,6 @@ from copy import deepcopy
 from multiprocessing import Manager
 import numpy as np
 from tqdm import tqdm
-import asyncio
 import threading
 
 
