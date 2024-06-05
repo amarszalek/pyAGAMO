@@ -11,7 +11,7 @@ class Objective:
         self._n_var = n_var
         self._bounds = bounds
         self._obj = obj
-        self.ns = ns
+        self._ns = ns
         self.args = args
         self.transport = transport
         self.verbose = verbose
@@ -88,6 +88,14 @@ class Objective:
     @obj.setter
     def obj(self, value):     
         self._obj = value
+
+    @property
+    def ns(self):
+        return self._ns
+
+    @obj.setter
+    def ns(self, value):
+        self._ns = value
 
 
 def publish_objective(*objs, host=None, port=0):

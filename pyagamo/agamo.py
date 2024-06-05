@@ -61,14 +61,14 @@ class AGAMO:
         
         self.objs_addr = []
         for obj in self.objectives:
-            self.objs_addr.append(obj.run(ns=self.ns))
+            self.objs_addr.append(obj.run())
             
         self.objs_m_addr = []
         for obj in self.objectives_m:
-            self.objs_m_addr.append(obj.run(ns=self.ns))
+            self.objs_m_addr.append(obj.run())
         
         if self.repair is not None:
-            self.repair_addr = self.repair.run(ns=self.ns)
+            self.repair_addr = self.repair.run()
         
         self.best_agent = run_agent('best', self.ns.addr(), transport=self.transport)
         self.best_addr = self.best_agent.bind('REP', alias='get_set_best', handler=lambda a, m: self._reply_best(a, m),
