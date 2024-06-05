@@ -35,9 +35,9 @@ class Objective:
         
     def run(self, ns=None):
         if ns is None:
-            self.ns = run_nameserver()
+            self._ns = run_nameserver()
         else:
-            self.ns = ns
+            self._ns = ns
         self.objective = run_agent(f'Objective_{self.num}', self.ns.addr(), transport=self.transport)
         self.addr = self.objective.bind('REP', alias='evaluate', handler=lambda a, m: self.reply(a, m),
                                         transport=self.transport)
