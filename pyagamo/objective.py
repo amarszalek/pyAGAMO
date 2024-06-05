@@ -40,7 +40,7 @@ class Objective:
             self.ns = ns
         self.objective = run_agent(f'Objective_{self.num}', self.ns.addr(), transport=self.transport)
         self.addr = self.objective.bind('REP', alias='evaluate', handler=lambda a, m: self.reply(a, m),
-                                        addr=self.ns.addr().split(':')[0], transport=self.transport)
+                                        addr=self.ns.addr().host, transport=self.transport)
         return self.addr
         
     def reply(self, agent, message):
