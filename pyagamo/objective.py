@@ -90,8 +90,8 @@ class Objective:
         self._obj = value
 
 
-def publish_objective(*objs):
-    daemon = Pyro4.Daemon()
+def publish_objective(*objs, host=None, port=0):
+    daemon = Pyro4.Daemon(host=host, port=port)
     for obj in objs:
         uri = daemon.register(obj)
         print(uri)

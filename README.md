@@ -84,7 +84,7 @@ plt.show()
 ```
 
 ## Usage examples
-- Quick example [`Quick_example.ipynb`](./examples/Quick_example.ipynb), simple example od usage, all objects on single computing machine.
+- Quick example [`Quick_example.ipynb`](./examples/Quick_example.ipynb), simple example of usage, all objects on single computing machine.
 
 
 ## Documentation
