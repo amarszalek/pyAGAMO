@@ -59,16 +59,19 @@ class AGAMO:
             for obj in self.objectives_m:
                 obj.num = obj.num + len(self.objectives_m)
         
+        #print(self.ns)
         self.objs_addr = []
         for obj in self.objectives:
-            self.objs_addr.append(obj.run())
+            self.objs_addr.append(obj.run(ns=self.ns))
+        #print(self.objs_addr)
             
         self.objs_m_addr = []
         for obj in self.objectives_m:
-            self.objs_m_addr.append(obj.run())
+            self.objs_m_addr.append(obj.run(ns=self.ns))
+        #print(self.objs_addr)
         
         if self.repair is not None:
-            self.repair_addr = self.repair.run()
+            self.repair_addr = self.repair.run(ns=self.ns)
         
         self.best_agent = run_agent('best', self.ns.addr(), transport=self.transport)
         self.best_addr = self.best_agent.bind('REP', alias='get_set_best', handler=lambda a, m: self._reply_best(a, m),
@@ -193,8 +196,13 @@ class AGAMO:
             del res['change_flag']
         return res
     
-    def close(self):
-        self.ns.shutdown()
+    def close(self, timeout=120.0, ns=True):
+        ag = self.ns.agents()
+        for a in ag:
+            self.ns.remove(a)
+        self.ns.shutdown_agents(timeout=timeout)
+        if ns:
+            self.ns.shutdown(timeout=timeout)
     
     def _reply_best(self, agent, message):
         player_data = message
