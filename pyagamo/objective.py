@@ -38,9 +38,15 @@ class Objective:
             self.ns = run_nameserver()
         else:
             self.ns = ns
+
+        baddr = None
+        if self.transport == 'tcp':
+            baddr = self.ns.addr().host
+
         self.objective = run_agent(f'Objective_{self.num}', self.ns.addr(), transport=self.transport)
-        self.addr = self.objective.bind('REP', alias='evaluate', handler=lambda a, m: self.reply(a, m),
-                                        addr=self.ns.addr().host, transport=self.transport)
+        self.addr = self.objective.bind('REP', alias='evaluate', handler=lambda a, m: self.reply(a, m), addr=baddr,
+                                        transport=self.transport)
+
         return self.addr
         
     def reply(self, agent, message):
