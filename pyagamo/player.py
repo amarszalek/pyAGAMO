@@ -93,7 +93,7 @@ class Player:
     def repair_call(self, solutions):
         if self.repair:
             self.rep_agent.send('repair', solutions)
-            return self.pep_agent.recv('repair')
+            return self.rep_agent.recv('repair')
         else:
             return solutions
         
