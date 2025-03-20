@@ -181,10 +181,11 @@ class Player:
                         front_eval = front_eval[arr]
                             
                         if pop.shape[0] < front.shape[0]:
-                            mask = front_suppression(front_eval, pop.shape[0])
-                            front = front[mask]
-                            front_eval = front_eval[mask]
-                            
+                            #mask = front_suppression(front_eval, pop.shape[0])
+                            #front = front[mask]
+                            #front_eval = front_eval[mask]
+                            front = front[:pop.shape[0]]
+
                         nn = pop.shape[0]
                         inds = np.random.choice(front.shape[0], nn, replace=True)
                         arg_sort = pop_eval.argsort()
