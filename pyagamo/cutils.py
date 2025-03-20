@@ -4,15 +4,24 @@
 # Do not make changes to this file unless you know what you are doing--modify
 # the SWIG interface file instead.
 
+import importlib
+
 from sys import version_info as _swig_python_version_info
 if _swig_python_version_info < (2, 7, 0):
     raise RuntimeError("Python 2.7 or later required")
 
+
+
 # Import the low-level C/C++ module
-if __package__ or "." in __name__:
-    from pyagamo import _cutils
-else:
-    import _cutils
+loader = importlib.machinery.ExtensionFileLoader('_cutils', f'./_cutils.so')
+spec = importlib.util.spec_from_loader(loader.name, loader)
+my_module = importlib.util.module_from_spec(spec)
+loader.exec_module(my_module)
+
+#if __package__ or "." in __name__:
+#    from . import _cutils
+#else:
+#    import _cutils
 
 try:
     import builtins as __builtin__
