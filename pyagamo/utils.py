@@ -1,6 +1,14 @@
 import numpy as np
 from copy import deepcopy
 
+CEXT = False
+try:
+    from cutils import cget_not_dominated, cfront_suppression
+    CEXT = True
+except ImportError:
+    print('C extension not available')
+
+
 def assigning_gens(nvars, nobjs):
     while True:
         if nvars <= nobjs:
@@ -27,35 +35,44 @@ def pairwise_dominance(x):
 
 
 def get_not_dominated(populations_eval):
-    mask = pairwise_dominance(populations_eval)
+    if CEXT:
+        mask = np.zeros(populations_eval.shape[0], dtype=np.int32)
+        cget_not_dominated(populations_eval, mask)
+    else:
+        mask = pairwise_dominance(populations_eval)
     return mask
 
 
 def pairwise_distance(x):
     return np.linalg.norm(x[:, None, :] - x[None, :, :], axis=-1)
 
+
 def front_suppression(front_eval, front_max):
-    n = front_eval.shape[0] - front_max
-    ideal = np.argmin(front_eval, axis=0)
-    front_eval_norm = front_eval + np.abs(np.min(front_eval, axis=0))+1.0
-    front_eval_norm = front_eval_norm/np.max(front_eval_norm, axis=0)
-    z = pairwise_distance(front_eval_norm)
-    mask = np.ones(front_eval.shape[0], dtype=bool)
-    t = np.tril(z) + np.triu(np.ones_like(z) * 1000000)
-    arg = np.argsort(t, axis=None)
-    indx_i, indx_j = np.unravel_index(arg, t.shape)
-    while n > 0:
-        ii = indx_i[0]
-        mask[ii] = False
-        tmp = indx_i[indx_i!=ii]
-        indx_j = indx_j[indx_i!=ii]
-        indx_i = tmp.copy()
-        tmp = indx_j[indx_j!=ii]
-        indx_i = indx_i[indx_j!=ii]
-        indx_j = tmp.copy()
-        n=n-1
-    for i in ideal:
-        mask[i] = True
+    if CEXT:
+        mask = np.zeros(front_eval.shape[0], dtype=np.int32)
+        cfront_suppression(front_eval, front_max, mask)
+    else:
+        n = front_eval.shape[0] - front_max
+        ideal = np.argmin(front_eval, axis=0)
+        front_eval_norm = front_eval + np.abs(np.min(front_eval, axis=0))+1.0
+        front_eval_norm = front_eval_norm/np.max(front_eval_norm, axis=0)
+        z = pairwise_distance(front_eval_norm)
+        mask = np.ones(front_eval.shape[0], dtype=bool)
+        t = np.tril(z) + np.triu(np.ones_like(z) * 1000000)
+        arg = np.argsort(t, axis=None)
+        indx_i, indx_j = np.unravel_index(arg, t.shape)
+        while n > 0:
+            ii = indx_i[0]
+            mask[ii] = False
+            tmp = indx_i[indx_i!=ii]
+            indx_j = indx_j[indx_i!=ii]
+            indx_i = tmp.copy()
+            tmp = indx_j[indx_j!=ii]
+            indx_i = indx_i[indx_j!=ii]
+            indx_j = tmp.copy()
+            n=n-1
+        for i in ideal:
+            mask[i] = True
     return mask
 
 
