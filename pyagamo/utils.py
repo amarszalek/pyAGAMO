@@ -1,7 +1,16 @@
 import numpy as np
 from copy import deepcopy
 
-CEXT = None
+
+CEXT = False
+try:
+    import pyagamo.cutils as cutils
+    CEXT = True
+except Exception as e:
+    print('C extension not available')
+    print(e)
+    CEXT = False
+
 
 def assigning_gens(nvars, nobjs):
     while True:
@@ -30,18 +39,10 @@ def pairwise_dominance(x):
 
 
 def get_not_dominated(populations_eval):
-    global CEXT
-    if CEXT is None:
-        try:
-            import pyagamo.cutils as cutils
-            CEXT = True
-        except Exception as e:
-            print('C extension not available')
-            print(e)
-            CEXT = False
     if CEXT:
         mask = np.zeros(populations_eval.shape[0], dtype=np.int32)
         cutils.cget_not_dominated(populations_eval, mask)
+        mask = mask.astype(bool)
     else:
         mask = pairwise_dominance(populations_eval)
     return mask
@@ -52,18 +53,10 @@ def pairwise_distance(x):
 
 
 def front_suppression(front_eval, front_max):
-    global CEXT
-    if CEXT is None:
-        try:
-            import pyagamo.cutils as cutils
-            CEXT = True
-        except Exception as e:
-            print('C extension not available')
-            print(e)
-            CEXT = False
     if CEXT:
         mask = np.zeros(front_eval.shape[0], dtype=np.int32)
         cutils.cfront_suppression(front_eval, front_max, mask)
+        mask = mask.astype(bool)
     else:
         n = front_eval.shape[0] - front_max
         ideal = np.argmin(front_eval, axis=0)
