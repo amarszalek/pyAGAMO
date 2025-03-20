@@ -188,17 +188,18 @@ class AGAMO:
     def get_results(self):
         res = deepcopy(self._shared_front)
         if 'nobjs' in res:
+            if res['front'].shape[0] > res['max_front']:
+                front_eval = res['front_eval'].copy()
+                front = res['front'].copy()
+                mask = front_suppression(front_eval, self.max_front)
+                res['front'] = front[mask]
+                res['front_eval'] = front_eval[mask]
             del res['nobjs']
             del res['max_front']
             del res['change_iter']
             del res['max_eval']
             del res['min_iter_pop']
             del res['change_flag']
-            front_eval = res['front_eval']
-            front = res['front']
-            mask = front_suppression(front_eval, self.max_front)
-            res['front'] = front[mask]
-            res['front_eval'] = front_eval[mask]
         return res
     
     def close(self, timeout=120.0, ns=True):
