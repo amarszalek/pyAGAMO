@@ -194,6 +194,11 @@ class AGAMO:
             del res['max_eval']
             del res['min_iter_pop']
             del res['change_flag']
+            front_eval = res['front_eval']
+            front = res['front']
+            mask = front_suppression(front_eval, self.max_front)
+            res['front'] = front[mask]
+            res['front_eval'] = front_eval[mask]
         return res
     
     def close(self, timeout=120.0, ns=True):
@@ -337,7 +342,7 @@ class AGAMO:
                 front_eval = front_eval[mask]
 
         # front suppression
-        if len(front) > 0 and (0 < max_front < front.shape[0]):
+        if len(front) > 0 and (0 < max_front + 100 < front.shape[0]):
             mask = front_suppression(front_eval, max_front)
             front = front[mask]
             front_eval = front_eval[mask]  
