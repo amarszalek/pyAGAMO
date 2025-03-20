@@ -23,5 +23,5 @@ setup(
         "License :: OSI Approved :: Apache Software License",
     ],
     include_package_data=True,
-    package_data={'': ['cutils_.so']},
+    package_data={'': ['_cutils.so']},
 )
