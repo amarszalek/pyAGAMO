@@ -5,7 +5,7 @@ CEXT = False
 try:
     from cutils import cget_not_dominated, cfront_suppression
     CEXT = True
-except ImportError:
+except Exception as e:
     print('C extension not available')
 
 
@@ -24,6 +24,7 @@ def assigning_gens(nvars, nobjs):
             if nvars >= nobjs and not np.any(np.all(r2, axis=1)) and not np.any(np.all(np.logical_not(r2), axis=1)):
                 break
     return r2
+
 
 def pairwise_dominance(x):
     z = x[:, np.newaxis] >= x #org
