@@ -21,5 +21,7 @@ setup(
     classifiers=[
         "Programming Language :: Python :: 3.10",
         "License :: OSI Approved :: Apache Software License",
-    ]
+    ],
+    include_package_data=True,
+    package_data={'': ['cutils_.so']},
 )
