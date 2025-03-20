@@ -342,7 +342,7 @@ class AGAMO:
                 front_eval = front_eval[mask]
 
         # front suppression
-        if len(front) > 0 and (0 < max_front + 100 < front.shape[0]):
+        if len(front) > 0 and (0 < max_front + 20 < front.shape[0]):
             mask = front_suppression(front_eval, max_front)
             front = front[mask]
             front_eval = front_eval[mask]  
