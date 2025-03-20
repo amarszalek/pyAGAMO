@@ -7,6 +7,7 @@ try:
     CEXT = True
 except Exception as e:
     print('C extension not available')
+    print(e)
 
 
 def assigning_gens(nvars, nobjs):
