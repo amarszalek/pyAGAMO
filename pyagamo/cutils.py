@@ -16,7 +16,8 @@ if _swig_python_version_info < (2, 7, 0):
 
 # Import the low-level C/C++ module
 path = inspect.getfile(pyagamo)
-loader = importlib.machinery.ExtensionFileLoader('_cutils', f'{path}/_cutils.so')
+path = path.replace('__init__.py', '')
+loader = importlib.machinery.ExtensionFileLoader('_cutils', f'{path}_cutils.so')
 spec = importlib.util.spec_from_loader(loader.name, loader)
 my_module = importlib.util.module_from_spec(spec)
 loader.exec_module(my_module)
