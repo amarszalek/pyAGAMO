@@ -3,7 +3,7 @@ from copy import deepcopy
 
 CEXT = False
 try:
-    from cutils import cget_not_dominated, cfront_suppression
+    from pyagamo.cutils import cget_not_dominated, cfront_suppression
     CEXT = True
 except Exception as e:
     print('C extension not available')
