@@ -6,10 +6,10 @@ from pymoo.core.population import Population
 from copy import deepcopy
 
 class Algorithm_pymoo(Player):
-    def __init__(self, num, npop, pymoo_alg, alg_kwargs={}, mq=0, ns=None, transport='ipc', verbose=False):
+    def __init__(self, num, npop, pymoo_alg, alg_kwargs={}, mq=0, random=True, ns=None, transport='ipc', verbose=False):
         self.pymoo_alg = pymoo_alg
         self.alg_kwargs = alg_kwargs
-        super(Algorithm_pymoo, self).__init__(num, npop, mq=mq, ns=ns, transport=transport, verbose=verbose)
+        super(Algorithm_pymoo, self).__init__(num, npop, mq=mq, random=random, ns=ns, transport=transport, verbose=verbose)
         
     def step(self, pop, pop_eval, pattern):
         evaluation_counter = 0

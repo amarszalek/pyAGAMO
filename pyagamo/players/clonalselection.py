@@ -5,11 +5,11 @@ from scipy.stats import rankdata
 
 
 class ClonalSelection(Player):
-    def __init__(self, num, npop, player_parm, mq=0, ns=None, transport='ipc', verbose=False):
+    def __init__(self, num, npop, player_parm, mq=0, random=True, ns=None, transport='ipc', verbose=False):
         self.nclone = player_parm.get('nclone', 15)
         self.mutate_args = tuple(player_parm.get('mutate_args', [0.45, 0.9, 0.01]))
         self.sup = player_parm.get('sup', 0.0)
-        super(ClonalSelection, self).__init__(num, npop, mq=mq, ns=ns, transport=transport, verbose=verbose)
+        super(ClonalSelection, self).__init__(num, npop, mq=mq, random=random, ns=ns, transport=transport, verbose=verbose)
 
     def step(self, pop, pop_eval, pattern):
         temp_pop = deepcopy(pop)
