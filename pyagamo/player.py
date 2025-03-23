@@ -7,7 +7,7 @@ from pyagamo.utils import front_suppression, get_not_dominated
 from pyagamo.utils import CloneMemoryQueue
 
 class Player:
-    def __init__(self, num, npop, mq=0, ns=None, transport='ipc', verbose=False):
+    def __init__(self, num, npop, mq=0, random=True, ns=None, transport='ipc', verbose=False):
         self.num = num
         self.npop = npop
         self.ns = ns
@@ -15,6 +15,7 @@ class Player:
         self.repair = False
         self.verbose = verbose
         self.mq = mq
+        self.random = random
         self.qclone = None
         if mq > 0:
             self.qclone = CloneMemoryQueue(mq)
@@ -181,10 +182,13 @@ class Player:
                         front_eval = front_eval[arr]
                             
                         if pop.shape[0] < front.shape[0]:
-                            #mask = front_suppression(front_eval, pop.shape[0])
-                            #front = front[mask]
-                            #front_eval = front_eval[mask]
-                            front = front[:pop.shape[0]]
+                            if self.random:
+                                front = front[:pop.shape[0]]
+                            else:
+                                mask = front_suppression(front_eval, pop.shape[0])
+                                front = front[mask]
+                                #front_eval = front_eval[mask]
+
 
                         nn = pop.shape[0]
                         inds = np.random.choice(front.shape[0], nn, replace=True)
